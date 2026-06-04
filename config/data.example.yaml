@@ -1,0 +1,56 @@
+input:
+  zip_path: "./data/17572684.zip"
+  parquet_name: "HackRep.parquet"
+  work_dir: "./work/hackrep_budget_work"
+
+output:
+  output_dir: "./outputs"
+  project_jsonl: "clean_projects.jsonl"
+  sft_prefix: "phase_budget_sft"
+  flat_prefix: "phase_budget_flat"
+  manifest: "manifest.json"
+
+filters:
+  min_readme_chars: 200
+  max_readme_chars: 30000
+  min_commits: 3
+  min_duration_hours: 1
+  max_duration_hours: 120
+  drop_forks: true
+  drop_archived: true
+  drop_disabled: true
+  require_language: true
+  require_readme: true
+
+prompt:
+  readme_excerpt_chars: 1200
+  include_commit_keywords: true
+
+splits:
+  train_pct: 90
+  val_pct: 5
+  test_pct: 5
+  seed: 20260515
+
+processing:
+  batch_size: 1024
+  limit: null
+  keep_invalid_projects: false
+
+weak_supervision:
+  enabled: true
+  min_phase_confidence: 0.0
+  drop_low_confidence: false
+
+budget_bins:
+  token:
+    - [0.375, "TOKEN_0.25X"]
+    - [0.625, "TOKEN_0.5X"]
+    - [0.875, "TOKEN_0.75X"]
+    - [1.125, "TOKEN_1.0X"]
+    - [999.0, "TOKEN_1.25X"]
+  time:
+    - [0.65, "TIME_LOW"]
+    - [0.95, "TIME_MEDIUM"]
+    - [1.20, "TIME_HIGH"]
+    - [999.0, "TIME_CRITICAL"]

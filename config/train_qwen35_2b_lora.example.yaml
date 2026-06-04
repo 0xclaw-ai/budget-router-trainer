@@ -1,0 +1,44 @@
+model:
+  model_path: "./models/qwen3.5-2b"
+  trust_remote_code: true
+
+data:
+  train_file: "./outputs/phase_budget_sft_train.jsonl"
+  val_file: "./outputs/phase_budget_sft_val.jsonl"
+  max_seq_len: 1024
+  max_train_samples: null
+  max_val_samples: 2048
+
+output:
+  output_dir: "./checkpoints/qwen35_2b_budget_lora"
+  log_dir: "./runs/qwen35_2b_budget_lora"
+
+train:
+  seed: 20260515
+  epochs: 1
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 16
+  learning_rate: 0.0002
+  weight_decay: 0.0
+  warmup_ratio: 0.03
+  max_grad_norm: 1.0
+  log_every_steps: 10
+  eval_every_steps: 1000
+  save_every_steps: 500
+  gradient_checkpointing: true
+  bf16: true
+  fp16: false
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj

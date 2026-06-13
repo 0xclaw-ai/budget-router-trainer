@@ -1,4 +1,4 @@
-# 🦀0xClaw Budget Router Training Module 🚀
+# 🦀 0xClaw Budget Router Training Module 🚀
 
 This repository contains the open training pipeline for BudgetRouter: dataset construction, project-level train/validation/test splitting, and LoRA SFT training.
 

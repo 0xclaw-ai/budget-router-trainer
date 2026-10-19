@@ -6,6 +6,7 @@ The trained LoRA adapter is hosted separately on Hugging Face:
 
 - Base model: [Qwen/Qwen3.5-2B](https://huggingface.co/Qwen/Qwen3.5-2B)
 - Trained BudgetRouter LoRA: [0xclaw-ai/budgetrouter-qwen3.5-2b-lora](https://huggingface.co/0xclaw-ai/budgetrouter-qwen3.5-2b-lora)
+- Redacted dataset: [0xclaw-ai/budgetrouter-hackrep](https://huggingface.co/datasets/0xclaw-ai/budgetrouter-hackrep)
 
 ## Setup
 
@@ -17,7 +18,31 @@ conda activate hackrep-budget
 pip install -r requirements-train.txt
 ```
 
-## Build Dataset
+## Download the redacted dataset
+
+The separate [dataset repository](https://huggingface.co/datasets/0xclaw-ai/budgetrouter-hackrep)
+contains 56,311 projects and 394,177 phase examples, with project-level splits.
+Its dataset card documents source attribution, license scope, weak supervision,
+redaction, schemas, and the distinction between the full corpus and the 50k
+checkpoint's sampled training inputs.
+
+```powershell
+hf download 0xclaw-ai/budgetrouter-hackrep --repo-type dataset --local-dir ./data/budgetrouter-hackrep --include phase_budget_sft_train.jsonl --include phase_budget_sft_val.jsonl --include phase_budget_sft_test.jsonl
+```
+
+Set `data.train_file` and `data.val_file` in your local training YAML to
+`./data/budgetrouter-hackrep/phase_budget_sft_train.jsonl` and
+`./data/budgetrouter-hackrep/phase_budget_sft_val.jsonl`. For the recorded 50k
+sampling configuration, use `max_train_samples: 50000`, `max_val_samples: 4096`,
+and training seed `20260515`. The existing adapter predates redaction; publishing
+the dataset does not retrain it or promise bitwise checkpoint reproduction.
+
+HackRep's official dataset metadata specifies CC BY 4.0. Preserve source
+attribution and change notices, and consult the dataset's `NOTICE.md` for the
+scope of that license and source-project rights. The code license below does
+not relicense third-party README excerpts.
+
+## Build Dataset from the upstream source
 
 Download `HackRep.parquet` from the [official HackRep dataset record](https://zenodo.org/records/17572684) into `./data/`, then run:
 
@@ -86,9 +111,10 @@ The export copies `adapter_model.safetensors` unchanged and sets
 tokenizer. Add a model card to the export directory before publication.
 
 Generated datasets, manifests, resolved training configs, checkpoints, and logs
-remain local and are ignored by Git. They may contain source repository text
-or machine-specific paths. This repository distributes the preparation code and
-relative-path example configs; it does not bundle the HackRep corpus.
+are ignored by Git. Unredacted exports may contain source repository text or
+machine-specific paths. This repository distributes preparation code and
+relative-path example configs; the reviewed redacted data is hosted in the
+separate [dataset repository](https://huggingface.co/datasets/0xclaw-ai/budgetrouter-hackrep).
 
 The training and dataset construction algorithms are unchanged. Installed wheels
 also include the scripts and example configs under `budget_router_trainer`;
@@ -103,5 +129,7 @@ for example, `python -m budget_router_trainer.scripts.prepare_hackrep_budget_dat
 
 ## License
 
-MIT for this repository's code. Obtain the upstream dataset and model under
-their respective terms.
+MIT for this repository's code. The HackRep dataset collection is licensed
+under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); source-project
+material and models may have separate rights and terms. See the dataset card
+and its attribution notice before reuse.

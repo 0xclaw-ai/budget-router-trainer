@@ -2,6 +2,7 @@
 name = "oxclaw-budgetrouter-training"
 version = "0.1.0"
 description = "Dataset construction, splitting, training, and evaluation scripts for BudgetRouter"
+readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
@@ -27,4 +28,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = []
+packages = ["scripts", "training", "config"]
+
+[tool.hatch.build.targets.wheel.sources]
+"scripts" = "budget_router_trainer/scripts"
+"training" = "budget_router_trainer/training"
+"config" = "budget_router_trainer/config"
+
+[project.urls]
+Repository = "https://github.com/0xclaw-ai/budget-router-trainer"
+Runtime = "https://github.com/0xclaw-ai/budget-router"
